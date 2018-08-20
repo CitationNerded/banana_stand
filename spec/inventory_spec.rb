@@ -1,11 +1,11 @@
 require 'inventory'
-require 'market'
+require_relative '../lib/market.rb'
+
 describe Inventory do
   before do
     starting_money = 5
     banana_split_price = 10
     @user_inventory = Inventory.new(banana_split_price, starting_money)
-    @market = Market.new
   end
   
   describe "Given I have starting inventory" do
@@ -19,7 +19,7 @@ describe Inventory do
   describe "Given I buy bananas" do
     it "should increase my banana inventory by the default value" do
       @user_inventory.buy_banana
-     
+
       expect(@user_inventory.banana).to equal 1
       expect(@user_inventory.money).to equal 4.75
 

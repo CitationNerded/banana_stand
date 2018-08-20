@@ -1,62 +1,76 @@
+require_relative './market'
+require_relative './viewer'
+
 class Inventory
-  attr_accessor :split_price #Read and write functionality
+  include Viewer
+  attr_accessor :split_price, :buy_banana, :market #Read and write functionality
   attr_reader :money, :banana, :icecream_scoop, :banana_splits #can only be read
-#abstract out all view logic from the inventory class. Also add validations (before_save or ruby equivalent for this to prevent negative values of stock)
-  def initialize(banana_split_price, starting_money)
-    @money = starting_money
-    #-----------------------------
-    @banana, @icecream_scoop, @banana_splits = 0, 0, 0
-    @banana_cost, @icecream_cost = 0.25, 0.5
-    #-----------------------------
-    @banana_splits = 0
-    @split_price = banana_split_price
-  end
+  #abstract out all view logic from the inventory class. Also add validations (before_save or ruby equivalent for this to prevent negative values of stock)
   
-  def buy_icecream(quantity = 1)
-    before_purchase = @money
-    after_purchase = @money -= @icecream_cost * quantity
+  def initialize(price_of_split)
+    @money = 5
+    @banana, @icecream_scoop, @banana_splits = 0, 0, 0
 
-    bankrupt? ? @money = before_purchase : @icecream_scoop += quantity
-    #puts "you now have #{@icecream_scoop} icecream scoops"
+    @banana_splits = 0
+    @split_price = price_of_split
+
+    #@banana_price, @icecream_price = 0.25, 0.5 #these are stubbed values that need to be being inherited from the market class
+
+
+    #----------------- I am unhappy with needing to initialize this here rather than in the game class.
+    #@market = Market.new
+    #@market.market_conditions
+    #-----------------
+
   end
 
-  def buy_banana(quantity = 1)
+  def buy_product(quantity, product)
     before_purchase = @money
-    after_purchase = @money -= @banana_cost * quantity
 
-    bankrupt? ? @money = before_purchase : @banana += quantity
+    if product == "banana"
+      product_price = @market.banana_price
+      after_purchase = @money -= product_price * quantity
+      bankrupt? ? (@money = before_purchase) && insufficient_credit : @banana += quantity
+      product_status(@banana, product)
 
-    #puts "you now have #{@banana} bananas"
+    elsif product == "icecream"
+      product_price = @market.icecream_price
+      after_purchase = @money -= product_price * quantity
+      bankrupt? ? (@money = before_purchase) && insufficient_credit : @icecream_scoop += quantity
+      product_status(@icecream_scoop, product)
+
+    end
+    bank_balance
   end
 
-  def make_split(quantity = 1)
-    if quantity > (@banana || @icecream_scoop)
-      return
+  def make_split(quantity)
+    if quantity > (@banana && @icecream_scoop)
+      not_enough_product
     else
       @banana -= quantity
       @icecream_scoop -= quantity
       @banana_splits += quantity
     end
-    #puts "you now have #{@banana_splits} banana splits"
+
+    product_status(@banana, "Banana")
+    product_status(@icecream_scoop, "Icecream Scoops")
+    product_status(@banana_splits, "Banana Splits")
   end
 
-  def sell_split(quantity = 1)
+  def sell_split(quantity = 1) #selling banana splits probably does not belong in the inventory class.
     @banana_splits -= quantity
     @money += @split_price
-    #puts "You sold a banana split! you now have #{@banana_splits} banana splits remaining and have #{@money} money."
+
+    sale(@banana_splits)
   end
   
   private
-
-  # def can_afford(quantity, product)
-  #   (products * cost) <= @money
-  # end
-
+  
   def bankrupt?
-    @money <= 0.0
+    money <= 0.0
   end
-
+  
   def out_of_product?
-    (@banana || @icecream_scoop) <= 0
+    (banana || icecream_scoop) <= 0
   end
 end

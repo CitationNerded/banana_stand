@@ -26,6 +26,6 @@ class Market
   end
   
   def market_conditions_have_been_assessed?
-    (@icecream_price && @banana_price) != nil
+    (icecream_price && banana_price) != nil
   end
 end

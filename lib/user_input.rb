@@ -1,3 +1,5 @@
 class UserInput
-  input = gets.chomp
+  def input
+    input = gets.chomp
+  end
 end
