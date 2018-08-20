@@ -8,3 +8,5 @@ class Game
       @market = Market.new
   end
 end
+
+my_game = Game.new

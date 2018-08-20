@@ -1,33 +1,31 @@
 class Market
-  attr_reader :conditions, :weather, :transport
-  attr_accessor :banana_price, :icecream_price, :price_multiplier
+  attr_accessor :banana_price, :icecream_price
   
-  
-  def initialize
-    @price_multiplier = 1
-    @icecream_price = 0.25
-    @banana_price = 0.02
-  end
-
-  def market_conditions
-    weather = rand(0..100)
-    transport = rand(0..10)
-    conditions = weather + transport
-    case conditions
-    when 100..110
-      self.price_multiplier *= 5
-    when 50...100
-      self.price_multiplier *= 2
-    when 0...50
-      self.price_multiplier
+  def market_conditions(conditions = random_demand)
+    if market_conditions_have_been_assessed?
+      puts "this has already been reviewed"
+    else
+      case conditions
+      when 8..10
+        @icecream_price = 0.5
+        @banana_price = 0.05
+      when 4..7
+        @icecream_price = 0.40
+        @banana_price = 0.035
+      when 1..6
+        @icecream_price = 0.25
+        @banana_price = 0.02
+      end
     end
   end
+ 
+  private
 
-  def banana_price
-    @banana_price * price_multiplier
+  def random_demand
+    rand(1..10)
   end
-
-  def icecream_price
-    @icecream_price * price_multiplier
+  
+  def market_conditions_have_been_assessed?
+    (@icecream_price && @banana_price) != nil
   end
 end
