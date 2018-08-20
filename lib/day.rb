@@ -9,4 +9,12 @@
 #The user is prompted on how many banana splits they wish to make.
 #The user is prompted on how much they want banana splits to cost for the day
 
-#The number of people  that will buy from the banana stand is now calculated 
+#The number of people  that will buy from the banana stand is now calculated
+class Day
+  include Viewer
+  @@days_survived = -1
+
+  def inialize
+    @@days_survivied += 1
+  end
+end

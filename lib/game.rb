@@ -5,13 +5,12 @@ require_relative './user_input'
 class Game
   include Viewer
   attr_accessor :market, :inventory, :viewer, :get_input
-
   def initialize
       welcome
       price_of_split = get_input.to_i
       @inventory = Inventory.new(price_of_split)
       @market = Market.new
-      shopping
+      start_of_day
   end
 
   def get_input
@@ -19,7 +18,7 @@ class Game
     #this method should contain some validations. If only numbers are input into the string then convert the string to an array, otherwise leave it as is.
   end
 
-  def shopping
+  def start_of_day #start of day and initial price setting for banana splits will need to be abstracted out into the day class once its created.
     market_prices
     buy_stock
     make_product
