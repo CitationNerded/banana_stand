@@ -55,8 +55,16 @@ module Viewer
     puts "What would you like to do today?"
     puts " 1. Buy || 2. Produce || 3. Price Set "
     puts "More information can be obtained by asking for:"
-    puts "4. Climate || 5. Market Costs || 6. Current Balance || 7. Yesterdays performance"
+    puts "4. Climate || 5. Market Costs || 6. Current Balance || 7. Yesterdays performance || 8. Estimated Foot Traffic"
     puts "Or if you are ready to begin the day, select 'Start'"
     puts "------------------------------------------------------------------------"
+  end
+
+  def weather_report
+    puts "Today the weather is looking like #{@climate.weather} degrees."
+  end
+
+  def walker_report
+    puts "Today we estimate around #{@foot_traffic.walkers} walkers will come by the Banana Stand."
   end
 end

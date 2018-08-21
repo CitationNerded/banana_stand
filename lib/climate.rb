@@ -8,6 +8,4 @@ class Climate
     weather_modifier = rand(-5..5)
     @weather += weather_modifier
   end
-
-
 end

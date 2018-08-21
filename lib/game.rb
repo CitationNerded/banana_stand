@@ -1,6 +1,7 @@
 require_relative './market'
 require_relative './inventory'
 require_relative './climate'
+require_relative './foot_traffic'
 
 class Game
   include Viewer
@@ -9,9 +10,11 @@ class Game
     @inventory = Inventory.new #belongs in game class
     @market = Market.new #belongs in day class
     @market.market_conditions #belongs in day class
-
+    @climate= Climate.new #belongs in the game class
     @climate.progress_weather_patterns # belongs in day class
-
+    
+    @foot_traffic = FootTraffic.new #belongs in the game class
+    @foot_traffic.walker_forecast(@climate.weather) #belongs in the day class
     welcome
     start_of_day
   end
@@ -64,7 +67,7 @@ class Game
       @market.split_price(get_input)
       options
     when ("4. Climate").include?(selected_option)
-      @climate.climate_status
+      weather_report
       options
     when ("5. Market Costs").include?(selected_option)
       @market.market_prices
@@ -73,6 +76,9 @@ class Game
       @inventory.bank_balance
       options
     when ("7. Yesterdays Performance").include?(selected_option)
+      options
+    when ("8. Estimated Foot Traffic").include?(selected_option)
+      walker_report
       options
     else
       input_unclear
