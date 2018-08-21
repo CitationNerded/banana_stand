@@ -1,55 +1,83 @@
 require_relative './market'
 require_relative './inventory'
-require_relative './user_input'
+require_relative './climate'
 
 class Game
   include Viewer
   attr_accessor :market, :inventory, :viewer, :get_input
   def initialize
-      welcome
-      price_of_split = get_input.to_i
-      @inventory = Inventory.new(price_of_split)
-      @market = Market.new
-      start_of_day
-  end
+    @inventory = Inventory.new #belongs in game class
+    @market = Market.new #belongs in day class
+    @market.market_conditions #belongs in day class
 
+    @climate.progress_weather_patterns # belongs in day class
+
+    welcome
+    start_of_day
+  end
+    
   def get_input
-    gets.chomp.downcase
-    #this method should contain some validations. If only numbers are input into the string then convert the string to an array, otherwise leave it as is.
+    input = gets.chomp
+    if (input.to_i.to_s == input)
+      input.to_i
+    else
+      input
+    end
   end
-
-  def start_of_day #start of day and initial price setting for banana splits will need to be abstracted out into the day class once its created.
-    market_prices
-    buy_stock
-    make_product
+  
+  def start_of_day
+    @market.market_prices
+    @market.split_price(get_input)
+    options
   end
-
-  def market_prices
-    @market.market_conditions
-    market_price_message
-  end
-
-  def buy_stock
-    while @inventory.money > 0
-      supplies_prompt
-      product = get_input
-      if (product == "icecream") || (product == "banana")
-        buy_supplies(product)
-        quantity = get_input.to_i
-        @inventory.buy_product(quantity, product)
-
-      elsif product == "stop"
-        return
-      else
-        input_unclear
-      end
+  
+  def stock_menu
+    supplies_message
+    stock = get_input.to_s
+    buy_supplies_message
+    stock_quantity = get_input.to_i
+    case
+    when ("1. Banana").include?(stock)
+      @inventory.buy_stock("banana", @market.banana_price, stock_quantity)
+    when ("2. Icecream").include?(stock)
+      @inventory.buy_stock("icecream", @market.icecream_price, stock_quantity)
+    else 
+      stock_menu
     end
   end
 
-  def make_product
-    production_prompt
-    produce_quantity = get_input.to_i
-    @inventory.make_split(produce_quantity)
+  def options
+    user_options    
+    selected_option = get_input.to_s
+    case
+    when ("0. Start").include?(selected_option)
+      @day.begin
+    when ("1. Buy").include?(selected_option)
+      stock_menu
+      options
+    when ("2. Produce").include?(selected_option)
+      production_message
+      @inventory.make_product(get_input)
+      options
+    when ("3. Price Set").include?(selected_option)
+      product_price_message
+      @market.split_price(get_input)
+      options
+    when ("4. Climate").include?(selected_option)
+      @climate.climate_status
+      options
+    when ("5. Market Costs").include?(selected_option)
+      @market.market_prices
+      options
+    when ("6. Current Balance").include?(selected_option)
+      @inventory.bank_balance
+      options
+    when ("7. Yesterdays Performance").include?(selected_option)
+      options
+    else
+      input_unclear
+      options
+    end
   end
 end
 

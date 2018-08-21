@@ -14,7 +14,23 @@ class Day
   include Viewer
   @@days_survived = -1
 
-  def inialize
+  def initialize
     @@days_survivied += 1
+    @market = Market.new
+    @market.market_conditions
   end
+end
+
+class Climate
+  include Viewer
+
+  attr_accessor :weather
+
+  def progress_weather_patterns
+    @weather = 25 unless @weather != nil
+    weather_modifier = rand(-5..5)
+    @weather += weather_modifier
+  end
+
+
 end

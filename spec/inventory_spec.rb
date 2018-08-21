@@ -3,9 +3,7 @@ require_relative '../lib/market.rb'
 
 describe Inventory do
   before do
-    starting_money = 5
-    banana_split_price = 10
-    @user_inventory = Inventory.new(banana_split_price, starting_money)
+    @user_inventory = Inventory.new
   end
   
   describe "Given I have starting inventory" do
@@ -18,7 +16,7 @@ describe Inventory do
 
   describe "Given I buy bananas" do
     it "should increase my banana inventory by the default value" do
-      @user_inventory.buy_banana
+      @user_inventory.buy_product(1 ,"banana")
 
       expect(@user_inventory.banana).to equal 1
       expect(@user_inventory.money).to equal 4.75
@@ -26,14 +24,14 @@ describe Inventory do
     end
 
     it "should increase my banana inventory by the defined amount" do
-      @user_inventory.buy_banana(5)
+      @user_inventory.buy_product(5, "banana")
 
       expect(@user_inventory.banana).to equal 5
       expect(@user_inventory.money).to equal 3.75
     end
 
     it "should not allow me to buy beyond my financial situation." do
-      @user_inventory.buy_banana(20)
+      @user_inventory.buy_product(20, "banana")
 
       expect(@user_inventory.banana).to equal 0
       expect(@user_inventory.money).to equal 5
@@ -42,7 +40,7 @@ describe Inventory do
 
   describe "Given I buy icecream" do
     it "should increase my icecream scoop inventory by the default value." do
-      @user_inventory.buy_icecream
+      @user_inventory.buy_product(1, "icecream")
      
       expect(@user_inventory.icecream_scoop).to equal 1
       expect(@user_inventory.money).to equal 4.5
@@ -50,14 +48,14 @@ describe Inventory do
     end
 
     it "should increase my icecream scoop inventory by the defined amount." do
-      @user_inventory.buy_icecream(5)
+      @user_inventory.buy_product(5, "icecream")
 
       expect(@user_inventory.icecream_scoop).to equal 5
       expect(@user_inventory.money).to equal 2.5
     end
 
     it "should not allow me to buy beyond my financial situation." do
-      @user_inventory.buy_icecream(20)
+      @user_inventory.buy_product(20, "icecream")
 
       expect(@user_inventory.icecream_scoop).to equal 0
       expect(@user_inventory.money).to equal 5
@@ -66,8 +64,8 @@ describe Inventory do
 
   describe "Give I want to make banana splits" do
     before do
-      @user_inventory.buy_banana(2)
-      @user_inventory.buy_icecream(2)
+      @user_inventory.buy_product(2, "banana")
+      @user_inventory.buy_product(2, "icecream")
     end
 
     it "should use one banana and icecream scoop for each banana split" do
