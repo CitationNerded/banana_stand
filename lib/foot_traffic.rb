@@ -1,13 +1,11 @@
-require_relative './climate'
-
 class FootTraffic
-  attr_accessor :walkers
+  attr_reader :walkers
 
   def initialize
+    @walkers = 10
   end
 
   def walker_forecast(weather)
-    walkers = 10  unless walkers != nil
-    walkers *= weather
+    @walkers *= weather
   end
 end

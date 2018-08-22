@@ -5,8 +5,8 @@ class Climate
     @weather = 25
   end
 
-  def progress_weather_patterns(weather_modifier)
-    @weather += weather_modifier
+  def progress_weather_patterns(modifier = weather_modifier)
+    @weather += modifier
   end
 
   private
