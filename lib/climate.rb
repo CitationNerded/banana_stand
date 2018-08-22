@@ -1,8 +1,4 @@
 class Climate
-  include Viewer
-
-  attr_accessor :weather, :progress_weather_patterns
-
   def initialize
     @weather = 25
   end
