@@ -3,8 +3,8 @@ require_relative './viewer'
 
 class Inventory
   include Viewer
-  #attr_accessor :split_price, :buy_banana, :market #Read and write functionality
-  attr_reader :money, :banana, :icecream_scoop, :banana_splits #can only be read
+  attr_accessor :banana_splits #Read and write functionality
+  attr_reader :money, :banana, :icecream_scoop, :actual_buyers, :potential_buyers #can only be read
   #abstract out all view logic from the inventory class. Also add validations (before_save or ruby equivalent for this to prevent negative values of stock)
   
   def initialize
@@ -28,30 +28,35 @@ class Inventory
   end
 
   def make_product(quantity)
-    if quantity > (@banana && @icecream_scoop)
+    if 0 == (@banana || @icecream_scoop)
       not_enough_product
     else
-      @banana -= quantity
-      @icecream_scoop -= quantity
-      @banana_splits += quantity
+      while  (quantity > @banana_splits) && ((@banana && @icecream_scoop) > 0)
+        @banana -= 1
+        @icecream_scoop -= 1
+        @banana_splits += 1
+      end
     end
-
+    
     product_status(@banana, "Banana")
     product_status(@icecream_scoop, "Icecream Scoops")
     product_status(@banana_splits, "Banana Splits")
   end
-
-  def sell_split(quantity = 1) #selling banana splits probably does not belong in the inventory class.
-    @banana_splits -= quantity
-    @money += @market.split_price
-
-    sale(@banana_splits)
+  
+  def sell_product(sale_price,potential_buyers)
+    actual_buyers = 0
+    while (0 < potential_buyers) && (@banana_splits > 0)
+      @banana_splits -= 1
+      potential_buyers -= 1
+      actual_buyers += 1
+    end
+    sales_message(actual_buyers, potential_buyers)
   end
 
   private
   
   def cannot_afford?
-    money <= 0.0
+    money < 0.0
   end
   
   def out_of_product?

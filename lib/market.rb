@@ -2,8 +2,7 @@ require_relative './viewer'
 
 class Market
   include Viewer
-  attr_reader :market_prices
-  attr_accessor :banana_price, :icecream_price, :price_of_split, :split_price
+  attr_accessor :banana_price, :icecream_price, :price_of_split
   
   def initialize
   end
@@ -30,13 +29,15 @@ class Market
     minimal_split_price = @banana_price + @icecream_price
     minimal_split_price.round(2)
   end
-  
-  def market_prices
-    market_price_message
-  end
 
   def split_price(set_price)
-    @price_of_split = set_price
+    @price_of_split = set_price.to_i
+  end
+
+  def market_interest(foot_traffic)
+    market_elasticity = rand(1..20)
+    market_engagement = (foot_traffic / market_elasticity)
+    @interest_in_product = ( market_engagement / @price_of_split.ceil) #ceil will return the highest whole number of the float
   end
 
   private

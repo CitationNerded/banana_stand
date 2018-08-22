@@ -10,13 +10,112 @@
 #The user is prompted on how much they want banana splits to cost for the day
 
 #The number of people  that will buy from the banana stand is now calculated
+require_relative './market'
+require_relative './inventory'
+#require_relative './climate'
+require_relative './foot_traffic'
+#require_relative './game'
+
 class Day
   include Viewer
+  attr_reader :starting_balance, :loss_condition
   @@days_survived = -1
 
-  def initialize
-    @@days_survivied += 1
+  def initialize(inventory, climate)
+    @@days_survived += 1
     @market = Market.new
     @market.market_conditions
+    #populate the inventory for the day (this will persist across all games):
+    @inventory = inventory
+    #Set the climate for the day (related to yesterdays weather)
+    @weather = climate
+    #estimated amount of people that will walk by the store for the day
+    @foot_traffic = FootTraffic.new #belongs in the game class
+    @foot_traffic.walker_forecast(@weather)
+
+    start_of_day
+  end
+
+  def get_input
+    input = gets.chomp
+    if (input.to_i.to_s == input)
+      input.to_i
+    else
+      input
+    end
+  end
+  
+  def start_of_day
+    @starting_balance = @inventory.money
+    market_price_message
+    @market.split_price(get_input)
+    options
+  end
+  
+  def stock_menu
+    supplies_message
+    stock = get_input.to_s
+    buy_supplies_message
+    stock_quantity = get_input.to_i
+    case
+    when ("1. Banana").include?(stock)
+      @inventory.buy_stock("banana", @market.banana_price, stock_quantity)
+    when ("2. Icecream").include?(stock)
+      @inventory.buy_stock("icecream", @market.icecream_price, stock_quantity)
+    else 
+      stock_menu
+    end
+  end
+  
+  def day_events
+    potential_buyers = @market.market_interest(@foot_traffic.walkers)
+    @inventory.sell_product(@market.price_of_split ,potential_buyers)
+    
+    net_profit = (@inventory.money.round - starting_balance).round(2)
+    end_of_day_report(net_profit)
+    
+    @inventory.banana_splits = 0
+    you_have_failed if loss_condition?
+  end
+  
+  def options
+    user_options    
+    selected_option = get_input.to_s
+    case
+    when ("0. Start").include?(selected_option)
+      day_events
+    when ("1. Buy").include?(selected_option)
+      stock_menu
+      options
+    when ("2. Produce").include?(selected_option)
+      production_message
+      @inventory.make_product(get_input)
+      options
+    when ("3. Price Set").include?(selected_option)
+      product_price_message
+      @market.split_price(get_input)
+      options
+    when ("4. Climate").include?(selected_option)
+      weather_report
+      options
+    when ("5. Market Costs").include?(selected_option)
+      market_price_message
+      options
+    when ("6. Current Balance").include?(selected_option)
+      @inventory.bank_balance
+      options
+    when ("7. Yesterdays Performance").include?(selected_option)
+      options
+    when ("8. Estimated Foot Traffic").include?(selected_option)
+      walker_report
+      options
+    else
+      input_unclear
+      options
+    end
+  end
+  
+  def loss_condition?
+    ((@inventory.money < @market.banana_price) && (@inventory.banana == 0)) || ((@inventory.money < @market.icecream_price) && (@inventory.icecream_scoop == 0))
   end
 end

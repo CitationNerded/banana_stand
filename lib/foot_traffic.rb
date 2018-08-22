@@ -10,6 +10,6 @@ class FootTraffic
 
   def walker_forecast(weather)
     @walkers = 10  unless @walkers != nil
-    @walkers = (@walkers * weather)
+    @walkers *= weather
   end
 end
