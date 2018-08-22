@@ -23,25 +23,20 @@ class Day
 
   def initialize(inventory, climate)
     @@days_survived += 1
-    @market = Market.new
-    @market.market_conditions
-    #populate the inventory for the day (this will persist across all games):
-    @inventory = inventory
-    #Set  the climate for the day (related to yesterdays weather)
-    @weather = climate
-    #estimated amount of people that will walk by the store for the day
-    @foot_traffic = FootTraffic.new
-    @foot_traffic.walker_forecast(@weather)
-
+    construct_game_parameters(inventory,climate)
     start_of_day
   end
 
   def get_input
-    input = gets.chomp
-    if (input.to_i.to_s == input)
-      input.to_i
-    else
-      input
+    input_clarity = false
+    while input_clarity == false
+      input = gets.chomp
+      if (input.to_i.to_s == input)
+        input.to_i
+        input_clarity = true
+      else
+        input_unclear
+      end
     end
   end
   
@@ -110,11 +105,31 @@ class Day
       walker_report
       options
     else
-      input_unclear
       options
     end
   end
   
+  private
+  def construct_game_parameters(inventory,climate)
+    initialize_market
+    #populate the inventory for the day (this will persist across all games):
+    @inventory = inventory
+    #Set  the climate for the day (related to yesterdays weather)
+    @weather = climate
+    #Estimated amount of people that will walk by the store for the day
+    intialize_foot_traffic
+  end
+
+  def initialize_market
+    @market = Market.new
+    @market.market_conditions
+  end
+
+  def intialize_foot_traffic
+    @foot_traffic = FootTraffic.new
+    @foot_traffic.walker_forecast(@weather)
+  end
+
   def loss_condition?
     ((@inventory.money < @market.banana_price) && (@inventory.banana == 0)) || ((@inventory.money < @market.icecream_price) && (@inventory.icecream_scoop == 0))
   end
