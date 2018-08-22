@@ -12,13 +12,12 @@
 #The number of people  that will buy from the banana stand is now calculated
 require_relative './market'
 require_relative './inventory'
-#require_relative './climate'
 require_relative './foot_traffic'
-#require_relative './game'
+require_relative './climate'
 
 class Day
   include Viewer
-  attr_reader :starting_balance, :loss_condition
+  attr_reader :starting_balance
   @@days_survived = -1
 
   def initialize(inventory, climate)
@@ -32,18 +31,20 @@ class Day
     while input_clarity == false
       input = gets.chomp
       if (input.to_i.to_s == input)
-        input.to_i
         input_clarity = true
+        return_input = input.to_i
       else
         input_unclear
       end
     end
+    return_input
   end
   
   def start_of_day
     @starting_balance = @inventory.money
     market_price_message
     @market.split_price(get_input)
+    puts @market.price_of_split
     options
   end
   
@@ -111,12 +112,10 @@ class Day
   
   private
   def construct_game_parameters(inventory,climate)
-    initialize_market
-    #populate the inventory for the day (this will persist across all games):
     @inventory = inventory
-    #Set  the climate for the day (related to yesterdays weather)
     @weather = climate
-    #Estimated amount of people that will walk by the store for the day
+    
+    initialize_market
     intialize_foot_traffic
   end
 

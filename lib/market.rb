@@ -2,11 +2,8 @@ require_relative './viewer'
 
 class Market
   include Viewer
-  attr_accessor :banana_price, :icecream_price, :price_of_split
+  attr_reader :banana_price, :icecream_price, :price_of_split
   
-  def initialize
-  end
-
   def market_conditions(conditions = random_demand)
     if market_conditions_have_been_assessed?
       puts "this has already been reviewed"
@@ -26,7 +23,7 @@ class Market
   end
  
   def break_even_price
-    minimal_split_price = @banana_price + @icecream_price
+    minimal_split_price = banana_price + icecream_price
     minimal_split_price.round(2)
   end
 
@@ -35,8 +32,7 @@ class Market
   end
 
   def market_interest(foot_traffic)
-    market_elasticity = rand(1..20)
-    market_engagement = (foot_traffic / market_elasticity)
+    market_engagement = (foot_traffic / random_demand)
     @interest_in_product = ( market_engagement / @price_of_split.ceil) #ceil will return the highest whole number of the float
   end
 

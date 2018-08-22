@@ -45,7 +45,7 @@ module Viewer
   def market_price_message
     puts "The price for bananas today is $#{@market.banana_price}"
     puts "The price for icecream today is $#{@market.icecream_price}"
-    puts "You will need to charge at least $#{@market.break_even_price.round(2)} to break even today."
+    puts "You will need to charge at least $#{@market.break_even_price} to break even today."
   end
   
   def product_price_message
@@ -76,7 +76,7 @@ module Viewer
   end
   
   def end_of_day_report(net_profit)
-    puts "Congratulations! you now have #{@inventory.money}. This is a profit of $#{net_profit}"
+    puts "Congratulations! you now have $#{@inventory.money}. This is a profit of $#{net_profit}"
   end
 
   def you_have_failed
