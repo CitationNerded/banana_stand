@@ -5,3 +5,4 @@ describe Game do
     @game = Game.new
   end
 end
+
