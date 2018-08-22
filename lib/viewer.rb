@@ -52,7 +52,7 @@ module Viewer
     puts "How much would you like to sell Banana Splits for today?"
   end
   
-  def user_options
+  def user_options #maybe use a heredoc
     puts "------------------------------------------------------------------------"
     puts "What would you like to do today?"
     puts " 1. Buy || 2. Produce || 3. Price Set "

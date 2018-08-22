@@ -27,10 +27,10 @@ class Day
     @market.market_conditions
     #populate the inventory for the day (this will persist across all games):
     @inventory = inventory
-    #Set the climate for the day (related to yesterdays weather)
+    #Set  the climate for the day (related to yesterdays weather)
     @weather = climate
     #estimated amount of people that will walk by the store for the day
-    @foot_traffic = FootTraffic.new #belongs in the game class
+    @foot_traffic = FootTraffic.new
     @foot_traffic.walker_forecast(@weather)
 
     start_of_day
@@ -58,7 +58,7 @@ class Day
     buy_supplies_message
     stock_quantity = get_input.to_i
     case
-    when ("1. Banana").include?(stock)
+    when ("1. Banana").include?(stock) #enumerables
       @inventory.buy_stock("banana", @market.banana_price, stock_quantity)
     when ("2. Icecream").include?(stock)
       @inventory.buy_stock("icecream", @market.icecream_price, stock_quantity)
@@ -71,7 +71,7 @@ class Day
     potential_buyers = @market.market_interest(@foot_traffic.walkers)
     @inventory.sell_product(@market.price_of_split ,potential_buyers)
     
-    net_profit = (@inventory.money.round - starting_balance).round(2)
+    net_profit = (@inventory.money - starting_balance).round(2)
     end_of_day_report(net_profit)
     
     @inventory.banana_splits = 0

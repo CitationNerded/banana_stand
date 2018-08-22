@@ -49,6 +49,7 @@ class Inventory
       @banana_splits -= 1
       potential_buyers -= 1
       actual_buyers += 1
+      @money += sale_price
     end
     sales_message(actual_buyers, potential_buyers)
   end

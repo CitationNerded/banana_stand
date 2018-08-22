@@ -31,7 +31,7 @@ class Market
   end
 
   def split_price(set_price)
-    @price_of_split = set_price.to_i
+    @price_of_split = set_price.to_f
   end
 
   def market_interest(foot_traffic)
