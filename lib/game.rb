@@ -19,7 +19,9 @@ class Game
    end
 
    def next_day
+    while @inventory.money > 0
       @day = Day.new(@inventory, get_weather)
+    end
    end
 end
 
