@@ -67,7 +67,8 @@ class Day
   def day_events
     potential_buyers = @market.market_interest(@foot_traffic.walkers)
     @inventory.sell_product(@market.price_of_split ,potential_buyers)
-    
+    sales_message(@inventory.actual_buyers, @inventory.potential_buyers)
+
     net_profit = (@inventory.money - starting_balance).round(2)
     end_of_day_report(net_profit)
     
@@ -86,7 +87,7 @@ class Day
       options
     when ("2. Produce").include?(selected_option)
       production_message
-      @inventory.make_product(get_input)
+      make_product
       options
     when ("3. Price Set").include?(selected_option)
       product_price_message
@@ -128,6 +129,17 @@ class Day
   def intialize_foot_traffic
     @foot_traffic = FootTraffic.new
     @foot_traffic.walker_forecast(@weather)
+  end
+
+  def make_product #Might be worth renaming this to not be confused with the inventory class version of this method
+    if 0 == (@inventory.banana || @inventory.icecream_scoop)
+      not_enough_product
+    else
+      @inventory.make_product(get_input)
+    end
+      product_status(@inventory.banana, "Banana")
+      product_status(@inventory.icecream_scoop, "Icecream Scoops")
+      product_status(@inventory.banana_splits, "Banana Splits")
   end
 
   def loss_condition?

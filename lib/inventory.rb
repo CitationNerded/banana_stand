@@ -1,9 +1,5 @@
-require_relative './viewer'
-
 class Inventory
-  include Viewer
-  attr_accessor :banana_splits #Read and write functionality
-  attr_reader :money, :banana, :icecream_scoop, :actual_buyers, :potential_buyers #can only be read
+  attr_reader :money, :banana, :icecream_scoop, :banana_splits, :actual_buyers, :potential_buyers #can only be read
   #abstract out all view logic from the inventory class. Also add validations (before_save or ruby equivalent for this to prevent negative values of stock)
   
   def initialize
@@ -26,19 +22,11 @@ class Inventory
   end
 
   def make_product(quantity)
-    if 0 == (@banana || @icecream_scoop)
-      not_enough_product
-    else
-      while  (quantity > @banana_splits) && ((@banana && @icecream_scoop) > 0)
-        @banana -= 1
-        @icecream_scoop -= 1
-        @banana_splits += 1
-      end
+    while  (quantity > @banana_splits) && ((@banana && @icecream_scoop) > 0)
+      @banana -= 1
+      @icecream_scoop -= 1
+      @banana_splits += 1
     end
-    
-    product_status(@banana, "Banana")
-    product_status(@icecream_scoop, "Icecream Scoops")
-    product_status(@banana_splits, "Banana Splits")
   end
   
   def sell_product(sale_price,potential_buyers)
@@ -49,7 +37,6 @@ class Inventory
       actual_buyers += 1
       @money += sale_price
     end
-    sales_message(actual_buyers, potential_buyers)
   end
 
   private
