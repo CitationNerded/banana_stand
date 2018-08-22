@@ -59,8 +59,9 @@ class Day
     when ("2. Icecream").include?(stock)
       @inventory.buy_stock("icecream", @market.icecream_price, stock_quantity)
     else 
-      stock_menu
+      stock_menu #not sure this sort of call should be made within its own method... maybe self would do the same thing?
     end
+    bank_balance
   end
   
   def day_events

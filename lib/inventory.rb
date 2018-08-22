@@ -1,4 +1,3 @@
-require_relative './market'
 require_relative './viewer'
 
 class Inventory
@@ -24,7 +23,6 @@ class Inventory
       cannot_afford? ? (@money = before_purchase) && insufficient_credit : @icecream_scoop += quantity
       product_status(stock_to_buy, @icecream_scoop)
     end
-    bank_balance
   end
 
   def make_product(quantity)
