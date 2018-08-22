@@ -1,12 +1,9 @@
-require_relative './viewer'
-
 class Market
-  include Viewer
-  attr_reader :banana_price, :icecream_price, :price_of_split
+  attr_reader :banana_price, :icecream_price, :price_of_split, :interest_in_product
   
   def market_conditions(conditions = random_demand)
     if market_conditions_have_been_assessed?
-      puts "this has already been reviewed"
+      puts "This has already been reviewed"
     else
       case conditions
       when 8..10
@@ -31,9 +28,9 @@ class Market
     @price_of_split = set_price.to_f
   end
 
-  def market_interest(foot_traffic)
-    market_engagement = (foot_traffic / random_demand)
-    @interest_in_product = ( market_engagement / @price_of_split.ceil) #ceil will return the highest whole number of the float
+  def market_interest(foot_traffic, demand = random_demand)
+    market_engagement = (foot_traffic / demand)
+    @interest_in_product = ( market_engagement / price_of_split.ceil) #ceil will return the highest whole number of the float
   end
 
   private

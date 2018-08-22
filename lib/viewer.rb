@@ -76,7 +76,7 @@ module Viewer
   end
   
   def end_of_day_report(net_profit)
-    puts "Congratulations! you now have $#{@inventory.money}. This is a profit of $#{net_profit}"
+    puts "Congratulations! you now have $@inventory.money}. This is a profit of $#{net_profit}"
   end
 
   def you_have_failed
