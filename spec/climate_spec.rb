@@ -13,8 +13,8 @@ describe Climate do
 
   describe "Given weather patterns have progressed" do
     it "should return a value different from the base weather pattern" do
-      @climate.progress_weather_patterns
-      expect(@climate.weather).to_not equal 25
+      @climate.progress_weather_patterns(2)
+      expect(@climate.weather).to equal 27
     end
   end
 end
