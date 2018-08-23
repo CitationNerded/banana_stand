@@ -54,14 +54,16 @@ class Viewer
     puts "How much would you like to sell Banana Splits for today?"
   end
   
-  def user_options #maybe use a heredoc
-    puts "------------------------------------------------------------------------"
-    puts "What would you like to do today?"
-    puts " 1. Buy || 2. Produce || 3. Price Set "
-    puts "More information can be obtained by asking for:"
-    puts "4. Climate || 5. Market Costs || 6. Current Balance || 7. Yesterdays performance || 8. Estimated Foot Traffic"
-    puts "Or if you are ready to begin the day, select '0. Start'"
-    puts "------------------------------------------------------------------------"
+  def user_options #Ran into difficulties using HEREDOCs here but would like to try and implement this.
+    puts <<~HEREDOC
+      ------------------------------------------------------------------------
+      What would you like to do today?
+      1. Buy || 2. Produce || 3. Price Set
+      More information can be obtained by asking for:
+      4. Climate || 5. Market Costs || 6. Current Balance || 7. Estimated Foot Traffic
+      Or if you are ready to begin the day, select '0. Start'
+      ------------------------------------------------------------------------
+    HEREDOC
   end
     
   def weather_report(weather)

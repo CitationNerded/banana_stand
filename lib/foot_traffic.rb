@@ -6,6 +6,6 @@ class FootTraffic
   end
 
   def walker_forecast(weather)
-    @walkers *= weather
+    @walkers = 10 * weather
   end
 end

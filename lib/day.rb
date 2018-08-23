@@ -1,16 +1,3 @@
-#At the beginning of the day in this order:
-
-#The climate is inialized. This helps to determine the market conditions and is passed into the market. 
-#The climate relies on the previous days climate. protected method comparison?
-#The market is inialized. this sets the market conditions for the day for shopping.
-#The number of people that will walk by the banana stand is calculated from the climate.
-
-#The user is prompted for input on how many bananas and icecream scoops they wish to buy.
-#The user is prompted on how many banana splits they wish to make.
-#The user is prompted on how much they want banana splits to cost for the day
-
-#The number of people  that will buy from the banana stand is now calculated
-
 class Day
   attr_reader :starting_balance, :stock_to_buy, :stock_price, :stock, :stock_quantity
   @@days_survived = 0
@@ -26,17 +13,11 @@ class Day
   end
 
   def get_input
-    input_clarity = false
-    while input_clarity == false
+    loop do
       input = gets.chomp
-      if (input.to_i.to_s == input)
-        input_clarity = true
-        return_input = input.to_i
-      else
-        @viewer.input_unclear
-      end
+      return input.to_i if (input.to_i.to_s == input)
+      @viewer.input_unclear
     end
-    return_input
   end
   
   def start_of_day
@@ -47,9 +28,8 @@ class Day
     @market.split_price(get_input)
     options
   end
-  
   def stock_menu
-    stock_selection
+  stock_selection
     if stock <= @inventory.stock.keys.count
       stock_price_join = stock_to_buy + "_price"
       stock_price = @market.send(stock_price_join)
@@ -69,7 +49,7 @@ class Day
   end
   
   def day_events
-    potential_buyers = @market.market_interest(@foot_traffic)
+    potential_buyers = @market.market_interest(@foot_traffic, @@days_survived)
     @inventory.sell_product(@market.price_of_split ,potential_buyers)
     @viewer.sales_message(@inventory.actual_buyers, @inventory.potential_buyers, @inventory.banana_splits)
     
@@ -106,10 +86,8 @@ class Day
     when ("6. Current Balance").include?(selected_option)
       @viewer.bank_balance(@inventory.money.round(2))
       options
-    when ("7. Yesterdays Performance").include?(selected_option)
-      options
-    when ("8. Estimated Foot Traffic").include?(selected_option)
-      @viewer.walker_report(@foot_traffic.walkers)
+    when ("7. Estimated Foot Traffic").include?(selected_option)
+      @viewer.walker_report(@foot_traffic)
       options
     else
       options

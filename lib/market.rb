@@ -27,8 +27,8 @@ class Market
     @price_of_split = set_price.to_f
   end
 
-  def market_interest(foot_traffic, demand = random_demand)
-    market_engagement = (foot_traffic / demand)
+  def market_interest(foot_traffic, interest, demand = random_demand)
+    market_engagement = ((foot_traffic + interest)/ demand)
     @interest_in_product = ( market_engagement / price_of_split.ceil) #ceil will return the highest whole number of the float
   end
 
