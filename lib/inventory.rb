@@ -1,27 +1,30 @@
+PRODUCTS = ["banana", "icecream"]
 class Inventory
   attr_accessor :banana_splits #this is needed for the day class to reset it to 0 at the end of each day
-  attr_reader :money, :banana, :icecream_scoop, :actual_buyers, :potential_buyers
+  attr_reader :money, :banana, :icecream, :actual_buyers, :potential_buyers, :stock_to_buy, :insufficient_credit
   def initialize
     @money = 5
-    @banana, @icecream_scoop, @banana_splits = 0, 0, 0
+    @banana, @icecream, @banana_splits = 0, 0, 0
+    @stock = {"banana" => 0, "icecream" => 0 }
   end
 
-  def buy_stock(stock_to_buy, cost_of_stock, quantity = 1)
-    before_purchase = money
-
-    if stock_to_buy == "banana"
-      @money -= (cost_of_stock * quantity)
-      cannot_afford? ? (money = before_purchase) && insufficient_credit : @banana += quantity #currently broken because insufficient_credit will rely on the viewer class
-    elsif stock_to_buy == "icecream"
-      @money -= (cost_of_stock * quantity)
-      cannot_afford? ? (money = before_purchase) && insufficient_credit : @icecream_scoop += quantity
+  def buy_stock(stock_to_buy, cost_of_stock, stock_quantity = 1)
+    before_purchase = @money
+    @money -= (cost_of_stock * stock_quantity)
+    if cannot_afford?
+      @money = before_purchase
+      insufficient_credit = false
+    else
+      insufficient_credit = true
+      byebug
+      @stock[stock_to_buy] += stock_quantity
     end
   end
 
   def make_product(quantity)
-    while  (quantity > banana_splits) && ((banana && icecream_scoop) > 0)
+    while  (quantity > banana_splits) && ((banana && icecream) > 0)
       banana -= 1
-      icecream_scoop -= 1
+      icecream -= 1
       banana_splits += 1
     end
   end
@@ -40,10 +43,10 @@ class Inventory
   private
   
   def cannot_afford?
-    money < 0.0
+    @money < 0.0
   end
   
   def out_of_product?
-    (banana || icecream_scoop) <= 0
+    (banana || icecream) <= 0
   end
 end

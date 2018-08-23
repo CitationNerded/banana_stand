@@ -17,12 +17,12 @@ require_relative './climate'
 require_relative './viewer'
 
 class Day
-  attr_reader :starting_balance
+  attr_reader :starting_balance, :stock_to_buy, :stock_price, :stock, :stock_quantity
   @@days_survived = -1
 
   def initialize(inventory, climate)
     @viewer = Viewer.new
-
+      
     @@days_survived += 1
     construct_game_parameters(inventory,climate)
     start_of_day
@@ -50,30 +50,32 @@ class Day
   end
   
   def stock_menu
-    @viewer.supplies_message
-    stock = get_input.to_s
-    @viewer.buy_supplies_message
-    stock_quantity = get_input.to_i
-    case
-    when ("1. Banana").include?(stock) #enumerables
-      stock_to_buy = "banana"
-      @inventory.buy_stock(stock_to_buy, @market.banana_price, stock_quantity)
-      @viewer.product_status(stock_to_buy, @inventory.banana)
-    when ("2. Icecream").include?(stock)
-      stock_to_buy = "icecream"
-      @inventory.buy_stock(stock_to_buy, @market.icecream_price, stock_quantity)
-      @viewer.product_status(stock_to_buy, @inventory.icecream_scoop)
-    else 
-      stock_menu #not sure this sort of call should be made within its own method... maybe self would do the same thing?
+    stock_selection
+    #Stop the day knowing about the existence of specific products. have it pass the Market value through to inventory, based on the product the inventory has requested
+
+    if stock <= @inventory.stock.keys.count
+      stock_price_join = stock_to_buy + "_price"
+      stock_price = @market.send(stock_price_join)
+      
+      @inventory.buy_stock(stock_to_buy, stock_price, @stock_quantity)
+
+      if @inventory.insufficient_credit
+        @viewer.insufficient_credit
+      else
+        @viewer.product_status(@inventory.stock_to_buy, stock_to_buy)
+        @viewer.bank_balance(@inventory.money.round(2))
+      end
+    else
+      @viewer.input_unclear
+      stock_menu
     end
-    @viewer.bank_balance(@inventory.money.round(2))
   end
   
   def day_events
     potential_buyers = @market.market_interest(@foot_traffic.walkers)
     @inventory.sell_product(@market.price_of_split ,potential_buyers)
     @viewer.sales_message(@inventory.actual_buyers, @inventory.potential_buyers, @inventory.banana_splits)
-
+    
     net_profit = (@inventory.money - starting_balance).round(2)
     @viewer.end_of_day_report(@inventory.money, net_profit)
     
@@ -125,29 +127,38 @@ class Day
     initialize_market
     intialize_foot_traffic
   end
-
+  
   def initialize_market
     @market = Market.new
     @market.market_conditions
   end
-
+  
   def intialize_foot_traffic
     @foot_traffic = FootTraffic.new
     @foot_traffic.walker_forecast(@weather)
   end
+  
+  def stock_selection
+    @viewer.supplies_message
+    @stock = get_input
+    @stock_to_buy = PRODUCTS[stock-1]
 
+    @viewer.buy_supplies_message
+    @stock_quantity = get_input.to_i
+  end
+  
   def make_product #Might be worth renaming this to not be confused with the inventory class version of this method
-    if 0 == (@inventory.banana || @inventory.icecream_scoop)
+    if 0 == (@inventory.banana || @inventory.icecream)
       @viewer.not_enough_product
     else
       @inventory.make_product(get_input)
     end
     @viewer.product_status(@inventory.banana, "Banana")
-    @viewer.product_status(@inventory.icecream_scoop, "Icecream Scoops")
+    @viewer.product_status(@inventory.icecream, "Icecream Scoops")
     @viewer.product_status(@inventory.banana_splits, "Banana Splits")
   end
-
+  
   def loss_condition?
-    ((@inventory.money < @market.banana_price) && (@inventory.banana == 0)) || ((@inventory.money < @market.icecream_price) && (@inventory.icecream_scoop == 0))
+    ((@inventory.money < @market.banana_price) && (@inventory.banana == 0)) || ((@inventory.money < @market.icecream_price) && (@inventory.icecream == 0))
   end
 end

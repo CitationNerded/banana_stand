@@ -1,3 +1,4 @@
+require 'byebug'
 require_relative './market'
 require_relative './inventory'
 require_relative './climate'
@@ -13,13 +14,17 @@ class Game
     next_day
   end
 
-   def get_weather
+   def weather
      @climate.progress_weather_patterns
+   end
+
+   def foot_traffic
+    @foot_traffic
    end
 
    def next_day
     while @inventory.money > 0
-      @day = Day.new(@inventory, get_weather)
+      @day = Day.new(@inventory, weather)
     end
    end
 end

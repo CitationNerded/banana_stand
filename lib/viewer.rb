@@ -1,7 +1,7 @@
 class Viewer
   
-  def product_status(product_name, product_count)
-    puts "You currently have #{product_count } #{product_name}."
+  def product_status(product_count, product_name)
+    puts "You currently have #{product_count} #{product_name}."
   end
   
   
