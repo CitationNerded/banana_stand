@@ -1,4 +1,92 @@
 require 'inventory'
 describe Inventory do
+  before do
+    @inventory = Inventory.new
+  end
 
+  describe "Given I begin with some money and zero products" do
+    it "Should return default initialized values" do
+      expect(@inventory.money).to equal 5
+      expect(@inventory.stock.values[0]).to equal 0 #I would like this to not be tied to banana and icecream so will need investigation on how to check every hash instance has a value of 0
+      expect(@inventory.stock.values[1]).to equal 0
+    end
+  end
+  describe "Given I wish to buy some products" do
+    it "should be possible to buy a default quantity of product" do
+      @inventory.buy_stock(@inventory.stock.keys[0], 0.5)
+      expect(@inventory.stock.values[0]).to equal 1
+      expect(@inventory.money).to equal 4.5
+    end
+
+    it "should be possible to specify quantity of stock to buy" do
+      @inventory.buy_stock(@inventory.stock.keys[0], 0.5, 8)
+      expect(@inventory.stock.values[0]).to equal 8
+      expect(@inventory.money).to equal 1.0
+    end
+
+    it "should be possible to bring your wallet down to 0 and not be denied service" do
+      @inventory.buy_stock(@inventory.stock.keys[1], 0.5, 10)
+      expect(@inventory.stock.values[1]).to equal 10
+      expect(@inventory.money).to equal 0.0
+    end
+
+    it "should not be possible to buy more than you can afford" do
+      @inventory.buy_stock(@inventory.stock.keys[0], 0.5, 20)
+      expect(@inventory.stock.values[0]).to equal 0
+      expect(@inventory.money).to equal 5
+    end
+  end
+
+  describe "Given I wish to make some product" do
+    before do
+      @inventory.stock[@inventory.stock.keys[0]] = 7
+      @inventory.stock[@inventory.stock.keys[1]] = 10
+    end
+    
+    it "should be possible to make a default product quantity" do
+      @inventory.make_product
+      expect(@inventory.banana_splits).to equal 1
+      expect(@inventory.stock.values[0, 2]).to eq [6, 9]  
+    end
+
+    it "should be possible to define the quantity you wish to make" do
+      @inventory.make_product(3)
+      expect(@inventory.banana_splits).to equal 3
+      expect(@inventory.stock.values[0, 2]).to eq [4, 7]  
+    end
+
+    it "should not be possible to make more product than the raw resources allow" do
+      @inventory.make_product(40)
+      expect(@inventory.banana_splits).to equal 7
+      expect(@inventory.stock.values[0, 2]).to eq [0, 3]  
+ 
+    end
+
+    it "should not be possible to make more product even if the user has enough of one required resource" do
+      @inventory.make_product(8)
+      expect(@inventory.banana_splits).to equal 7
+      expect(@inventory.stock.values[0, 2]).to eq [0, 3]  
+    end
+  end
+
+  describe "Given I wish to sell products" do
+    before do
+      @inventory.banana_splits = 10
+    end
+    it "should be possible to sell a product" do
+
+    end
+
+    it "should not be possible to sell more products than I currently have in stock" do
+
+    end
+
+    it "My financial situation should improve to reflect sold product" do
+
+    end
+
+    it "I should not be able to sell more product than potential shoppers" do
+
+    end
+  end
 end 

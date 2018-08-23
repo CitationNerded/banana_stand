@@ -19,7 +19,7 @@ class Inventory
     end
   end
 
-  def make_product(quantity)
+  def make_product(quantity = 1)
     while  ((quantity > @banana_splits) && @stock.all?{|key, value| value > 0 })
       @stock["banana"] -= 1
       @stock["icecream"] -= 1

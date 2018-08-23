@@ -60,7 +60,7 @@ describe Market do
   describe "Given there is market interest" do
     it "should be possible without user input" do
       @market.split_price(2)
-      @market.market_interest(12, 2)
+      @market.market_interest(12, 2, 2)
       
       expect(@market.interest_in_product).to be 3
       expect(@market.interest_in_product).to be_a Integer
