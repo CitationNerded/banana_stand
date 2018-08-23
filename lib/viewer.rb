@@ -46,6 +46,8 @@ class Viewer
     puts "The price for bananas today is $#{banana_price}"
     puts "The price for icecream today is $#{icecream_price}"
     puts "You will need to charge at least $#{break_even_price} to break even today."
+    puts
+    puts "What would you like to charge?"
   end
   
   def product_price_message
@@ -77,6 +79,10 @@ class Viewer
   
   def end_of_day_report(money,net_profit)
     puts "Congratulations! you now have $#{money}. This is a profit of $#{net_profit}"
+  end
+  
+  def you_have_survived(number_of_days)
+    puts "So far you have survived for #{number_of_days} days."
   end
 
   def you_have_failed

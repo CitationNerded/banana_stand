@@ -2,9 +2,6 @@ class Market
   attr_reader :banana_price, :icecream_price, :price_of_split, :interest_in_product
   
   def market_conditions(conditions = random_demand)
-    if market_conditions_have_been_assessed?
-      puts "This has already been reviewed"
-    else
       case conditions
       when 8..10
         @icecream_price = 0.5
@@ -16,7 +13,6 @@ class Market
         @icecream_price = 0.25
         @banana_price = 0.02
       end
-    end
   end
  
   def break_even_price
@@ -25,6 +21,9 @@ class Market
   end
 
   def split_price(set_price)
+    if set_price <= 0.1
+      set_price = 0.1
+    end
     @price_of_split = set_price.to_f
   end
 
@@ -37,9 +36,5 @@ class Market
 
   def random_demand
     rand(1..10)
-  end
-  
-  def market_conditions_have_been_assessed?
-    (icecream_price && banana_price) != nil
   end
 end

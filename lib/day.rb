@@ -13,7 +13,7 @@
 
 class Day
   attr_reader :starting_balance, :stock_to_buy, :stock_price, :stock, :stock_quantity
-  @@days_survived = -1
+  @@days_survived = 0
 
   def initialize(inventory, climate, foot_traffic, market, viewer)      
     @@days_survived += 1
@@ -50,8 +50,6 @@ class Day
   
   def stock_menu
     stock_selection
-    #Stop the day knowing about the existence of specific products. have it pass the Market value through to inventory, based on the product the inventory has requested
-
     if stock <= @inventory.stock.keys.count
       stock_price_join = stock_to_buy + "_price"
       stock_price = @market.send(stock_price_join)
@@ -61,7 +59,7 @@ class Day
       if @inventory.insufficient_credit
         @viewer.insufficient_credit
       else
-        @viewer.product_status(@inventory.stock_to_buy, stock_to_buy)
+        @viewer.product_status(@inventory.stock[stock_to_buy], stock_to_buy)
         @viewer.bank_balance(@inventory.money.round(2))
       end
     else
@@ -71,7 +69,7 @@ class Day
   end
   
   def day_events
-    potential_buyers = @market.market_interest(@foot_traffic.walkers)
+    potential_buyers = @market.market_interest(@foot_traffic)
     @inventory.sell_product(@market.price_of_split ,potential_buyers)
     @viewer.sales_message(@inventory.actual_buyers, @inventory.potential_buyers, @inventory.banana_splits)
     
@@ -79,7 +77,7 @@ class Day
     @viewer.end_of_day_report(@inventory.money, net_profit)
     
     @inventory.banana_splits = 0
-    @viewer.you_have_failed if loss_condition?
+    loss_condition? ? @viewer.you_have_failed : @viewer.you_have_survived(@@days_survived)
   end
   
   def options
@@ -122,24 +120,19 @@ class Day
   def stock_selection
     @viewer.supplies_message
     @stock = get_input
-    @stock_to_buy = PRODUCTS[stock-1]
+    @stock_to_buy = @inventory.stock.keys[@stock-1]
 
     @viewer.buy_supplies_message
     @stock_quantity = get_input.to_i
   end
   
   def make_product #Might be worth renaming this to not be confused with the inventory class version of this method
-    if 0 == (@inventory.banana || @inventory.icecream)
-      @viewer.not_enough_product
-    else
-      @inventory.make_product(get_input)
-    end
-    @viewer.product_status(@inventory.banana, "Banana")
-    @viewer.product_status(@inventory.icecream, "Icecream Scoops")
+    @inventory.make_product(get_input)
+    @inventory.stock.each{ |value,key| @viewer.product_status(key, value)}
     @viewer.product_status(@inventory.banana_splits, "Banana Splits")
   end
   
   def loss_condition?
-    ((@inventory.money < @market.banana_price) && (@inventory.banana == 0)) || ((@inventory.money < @market.icecream_price) && (@inventory.icecream == 0))
+    ((@inventory.money < @market.banana_price) && (@inventory.stock["banana"] == 0)) || ((@inventory.money < @market.icecream_price) && (@inventory.stock["icecream"] == 0))
   end
 end
