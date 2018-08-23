@@ -14,13 +14,15 @@ require_relative './market'
 require_relative './inventory'
 require_relative './foot_traffic'
 require_relative './climate'
+require_relative './viewer'
 
 class Day
-  include Viewer
   attr_reader :starting_balance
   @@days_survived = -1
 
   def initialize(inventory, climate)
+    @viewer = Viewer.new
+
     @@days_survived += 1
     construct_game_parameters(inventory,climate)
     start_of_day
@@ -34,7 +36,7 @@ class Day
         input_clarity = true
         return_input = input.to_i
       else
-        input_unclear
+        @viewer.input_unclear
       end
     end
     return_input
@@ -42,42 +44,45 @@ class Day
   
   def start_of_day
     @starting_balance = @inventory.money
-    market_price_message
+    @viewer.market_price_message(@market.banana_price,@market.icecream_price,@market.break_even_price)
     @market.split_price(get_input)
-    puts @market.price_of_split
     options
   end
   
   def stock_menu
-    supplies_message
+    @viewer.supplies_message
     stock = get_input.to_s
-    buy_supplies_message
+    @viewer.buy_supplies_message
     stock_quantity = get_input.to_i
     case
     when ("1. Banana").include?(stock) #enumerables
-      @inventory.buy_stock("banana", @market.banana_price, stock_quantity)
+      stock_to_buy = "banana"
+      @inventory.buy_stock(stock_to_buy, @market.banana_price, stock_quantity)
+      @viewer.product_status(stock_to_buy, @inventory.banana)
     when ("2. Icecream").include?(stock)
-      @inventory.buy_stock("icecream", @market.icecream_price, stock_quantity)
+      stock_to_buy = "icecream"
+      @inventory.buy_stock(stock_to_buy, @market.icecream_price, stock_quantity)
+      @viewer.product_status(stock_to_buy, @inventory.icecream_scoop)
     else 
       stock_menu #not sure this sort of call should be made within its own method... maybe self would do the same thing?
     end
-    bank_balance
+    @viewer.bank_balance(@inventory.money.round(2))
   end
   
   def day_events
     potential_buyers = @market.market_interest(@foot_traffic.walkers)
     @inventory.sell_product(@market.price_of_split ,potential_buyers)
-    sales_message(@inventory.actual_buyers, @inventory.potential_buyers)
+    @viewer.sales_message(@inventory.actual_buyers, @inventory.potential_buyers, @inventory.banana_splits)
 
     net_profit = (@inventory.money - starting_balance).round(2)
-    end_of_day_report(net_profit)
+    @viewer.end_of_day_report(@inventory.money, net_profit)
     
     @inventory.banana_splits = 0
-    you_have_failed if loss_condition?
+    @viewer.you_have_failed if loss_condition?
   end
   
   def options
-    user_options    
+    @viewer.user_options    
     selected_option = get_input.to_s
     case
     when ("0. Start").include?(selected_option)
@@ -86,26 +91,26 @@ class Day
       stock_menu
       options
     when ("2. Produce").include?(selected_option)
-      production_message
+      @viewer.production_message
       make_product
       options
     when ("3. Price Set").include?(selected_option)
-      product_price_message
+      @viewer.product_price_message
       @market.split_price(get_input)
       options
     when ("4. Climate").include?(selected_option)
-      weather_report
+      @viewer.weather_report(@climate.weather)
       options
     when ("5. Market Costs").include?(selected_option)
-      market_price_message
+      @viewer.market_price_message(@market.banana_price,@market.icecream_price,@market.break_even_price)
       options
     when ("6. Current Balance").include?(selected_option)
-      @inventory.bank_balance
+      @viewer.bank_balance(@inventory.money.round(2))
       options
     when ("7. Yesterdays Performance").include?(selected_option)
       options
     when ("8. Estimated Foot Traffic").include?(selected_option)
-      walker_report
+      @viewer.walker_report(@foot_traffic.walkers)
       options
     else
       options
@@ -133,13 +138,13 @@ class Day
 
   def make_product #Might be worth renaming this to not be confused with the inventory class version of this method
     if 0 == (@inventory.banana || @inventory.icecream_scoop)
-      not_enough_product
+      @viewer.not_enough_product
     else
       @inventory.make_product(get_input)
     end
-      product_status(@inventory.banana, "Banana")
-      product_status(@inventory.icecream_scoop, "Icecream Scoops")
-      product_status(@inventory.banana_splits, "Banana Splits")
+    @viewer.product_status(@inventory.banana, "Banana")
+    @viewer.product_status(@inventory.icecream_scoop, "Icecream Scoops")
+    @viewer.product_status(@inventory.banana_splits, "Banana Splits")
   end
 
   def loss_condition?

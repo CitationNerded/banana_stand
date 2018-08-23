@@ -2,13 +2,14 @@ require_relative './market'
 require_relative './inventory'
 require_relative './climate'
 require_relative './day'
+require_relative './viewer'
 
 class Game
-  include Viewer
   def initialize
+    @viewer = Viewer.new
     @inventory = Inventory.new
     @climate = Climate.new
-    welcome
+    @viewer.welcome(@inventory.money)
     next_day
   end
 

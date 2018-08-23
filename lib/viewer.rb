@@ -1,12 +1,12 @@
-module Viewer
+class Viewer
   
   def product_status(product_name, product_count)
-    puts "You currently have #{product_name } #{product_count}."
+    puts "You currently have #{product_count } #{product_name}."
   end
   
   
-  def welcome
-    puts "Welcome to the Banana Stand! You have started with $#{@inventory.money}. Please input how much you want Banana Splits to cost today:"
+  def welcome(money)
+    puts "Welcome to the Banana Stand! You have started with $#{money}. Please input how much you want Banana Splits to cost today:"
   end
   
   def supplies_message
@@ -27,8 +27,8 @@ module Viewer
     puts "The sale price of your products must be greater than 0."
   end
   
-  def bank_balance
-    puts "You have $#{self.money.round(2)} dollars remaining."
+  def bank_balance(money)
+    puts "You have $#{money} dollars remaining."
   end
 
   def insufficient_credit
@@ -42,10 +42,10 @@ module Viewer
     puts "How many Banana Splits would you like to make?"
   end
   
-  def market_price_message
-    puts "The price for bananas today is $#{@market.banana_price}"
-    puts "The price for icecream today is $#{@market.icecream_price}"
-    puts "You will need to charge at least $#{@market.break_even_price} to break even today."
+  def market_price_message(banana_price, icecream_price, break_even_price)
+    puts "The price for bananas today is $#{banana_price}"
+    puts "The price for icecream today is $#{icecream_price}"
+    puts "You will need to charge at least $#{break_even_price} to break even today."
   end
   
   def product_price_message
@@ -62,21 +62,21 @@ module Viewer
     puts "------------------------------------------------------------------------"
   end
     
-  def weather_report
-    puts "Today the weather is looking like #{@weather} degrees."
+  def weather_report(weather)
+    puts "Today the weather is looking like #{weather} degrees."
   end
   
-  def walker_report
-    puts "Today we estimate around #{@foot_traffic.walkers} walkers will come by the Banana Stand."
+  def walker_report(foot_traffic)
+    puts "Today we estimate around #{foot_traffic} walkers will come by the Banana Stand."
   end
   
-  def sales_message(actual_buyers, potential_buyers)
+  def sales_message(actual_buyers, potential_buyers, wastage)
     puts("You have sold to #{actual_buyers} buyers today! You missed selling to #{potential_buyers} Potential Buyers.")
-    puts("You wasted #{self.banana_splits} banana splits")
+    puts("You wasted #{wastage} banana splits")
   end
   
-  def end_of_day_report(net_profit)
-    puts "Congratulations! you now have $@inventory.money}. This is a profit of $#{net_profit}"
+  def end_of_day_report(money,net_profit)
+    puts "Congratulations! you now have $#{money}. This is a profit of $#{net_profit}"
   end
 
   def you_have_failed

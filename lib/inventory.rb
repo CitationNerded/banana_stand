@@ -1,41 +1,39 @@
 class Inventory
-  attr_reader :money, :banana, :icecream_scoop, :banana_splits, :actual_buyers, :potential_buyers #can only be read
-  #abstract out all view logic from the inventory class. Also add validations (before_save or ruby equivalent for this to prevent negative values of stock)
-  
+  attr_accessor :banana_splits #this is needed for the day class to reset it to 0 at the end of each day
+  attr_reader :money, :banana, :icecream_scoop, :actual_buyers, :potential_buyers
   def initialize
     @money = 5
     @banana, @icecream_scoop, @banana_splits = 0, 0, 0
   end
 
   def buy_stock(stock_to_buy, cost_of_stock, quantity = 1)
-    before_purchase = @money
+    before_purchase = money
 
     if stock_to_buy == "banana"
-      after_purchase = @money -= cost_of_stock * quantity
-      cannot_afford? ? (@money = before_purchase) && insufficient_credit : @banana += quantity
-      product_status(stock_to_buy, @banana)
+      @money -= (cost_of_stock * quantity)
+      cannot_afford? ? (money = before_purchase) && insufficient_credit : @banana += quantity #currently broken because insufficient_credit will rely on the viewer class
     elsif stock_to_buy == "icecream"
-      after_purchase = @money -= cost_of_stock * quantity
-      cannot_afford? ? (@money = before_purchase) && insufficient_credit : @icecream_scoop += quantity
-      product_status(stock_to_buy, @icecream_scoop)
+      @money -= (cost_of_stock * quantity)
+      cannot_afford? ? (money = before_purchase) && insufficient_credit : @icecream_scoop += quantity
     end
   end
 
   def make_product(quantity)
-    while  (quantity > @banana_splits) && ((@banana && @icecream_scoop) > 0)
-      @banana -= 1
-      @icecream_scoop -= 1
-      @banana_splits += 1
+    while  (quantity > banana_splits) && ((banana && icecream_scoop) > 0)
+      banana -= 1
+      icecream_scoop -= 1
+      banana_splits += 1
     end
   end
   
   def sell_product(sale_price,potential_buyers)
-    actual_buyers = 0
-    while (0 < potential_buyers) && (@banana_splits > 0)
-      @banana_splits -= 1
+    @actual_buyers = 0
+    @potential_buyers = potential_buyers
+    while (0 < potential_buyers) && (banana_splits > 0)
+      banana_splits -= 1
       potential_buyers -= 1
       actual_buyers += 1
-      @money += sale_price
+      money += sale_price
     end
   end
 
