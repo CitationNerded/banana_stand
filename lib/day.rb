@@ -10,21 +10,18 @@
 #The user is prompted on how much they want banana splits to cost for the day
 
 #The number of people  that will buy from the banana stand is now calculated
-require_relative './market'
-require_relative './inventory'
-require_relative './foot_traffic'
-require_relative './climate'
-require_relative './viewer'
 
 class Day
   attr_reader :starting_balance, :stock_to_buy, :stock_price, :stock, :stock_quantity
   @@days_survived = -1
 
-  def initialize(inventory, climate)
-    @viewer = Viewer.new
-      
+  def initialize(inventory, climate, foot_traffic, market, viewer)      
     @@days_survived += 1
-    construct_game_parameters(inventory,climate)
+    @inventory = inventory
+    @climate = climate
+    @foot_traffic = foot_traffic
+    @market = market
+    @viewer = viewer
     start_of_day
   end
 
@@ -44,6 +41,8 @@ class Day
   
   def start_of_day
     @starting_balance = @inventory.money
+    @market.market_conditions
+
     @viewer.market_price_message(@market.banana_price,@market.icecream_price,@market.break_even_price)
     @market.split_price(get_input)
     options
@@ -56,7 +55,7 @@ class Day
     if stock <= @inventory.stock.keys.count
       stock_price_join = stock_to_buy + "_price"
       stock_price = @market.send(stock_price_join)
-      
+
       @inventory.buy_stock(stock_to_buy, stock_price, @stock_quantity)
 
       if @inventory.insufficient_credit
@@ -120,24 +119,6 @@ class Day
   end
   
   private
-  def construct_game_parameters(inventory,climate)
-    @inventory = inventory
-    @weather = climate
-    
-    initialize_market
-    intialize_foot_traffic
-  end
-  
-  def initialize_market
-    @market = Market.new
-    @market.market_conditions
-  end
-  
-  def intialize_foot_traffic
-    @foot_traffic = FootTraffic.new
-    @foot_traffic.walker_forecast(@weather)
-  end
-  
   def stock_selection
     @viewer.supplies_message
     @stock = get_input
