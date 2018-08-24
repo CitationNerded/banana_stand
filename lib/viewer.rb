@@ -34,6 +34,7 @@ class Viewer
   def insufficient_credit
   puts "You do not have enough money to afford this."
   end
+  
   def not_enough_product
     puts "You don't have enough products to fulfill this request."
   end

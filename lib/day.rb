@@ -28,6 +28,7 @@ class Day
     @market.split_price(get_input)
     options
   end
+
   def stock_menu
   stock_selection
     if stock <= @inventory.stock.keys.count
@@ -51,12 +52,12 @@ class Day
   def day_events
     potential_buyers = @market.market_interest(@foot_traffic, @@days_survived)
     @inventory.sell_product(@market.price_of_split ,potential_buyers)
-    @viewer.sales_message(@inventory.actual_buyers, @inventory.potential_buyers, @inventory.banana_splits)
+    @viewer.sales_message(@inventory.actual_buyers, @inventory.potential_buyers, @inventory.sellable_product.keys[0])
     
     net_profit = (@inventory.money - starting_balance).round(2)
     @viewer.end_of_day_report(@inventory.money, net_profit)
     
-    @inventory.banana_splits = 0
+    @inventory.sellable_product[@inventory.sellable_product.keys[0]] = 0
     loss_condition? ? @viewer.you_have_failed : @viewer.you_have_survived(@@days_survived)
   end
   
@@ -107,7 +108,7 @@ class Day
   def make_product #Might be worth renaming this to not be confused with the inventory class version of this method
     @inventory.make_product(get_input)
     @inventory.stock.each{ |value,key| @viewer.product_status(key, value)}
-    @viewer.product_status(@inventory.banana_splits, "Banana Splits")
+    @viewer.product_status(@inventory.sellable_product.values[0], @inventory.sellable_product.keys[0])
   end
   
   def loss_condition?

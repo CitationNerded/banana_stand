@@ -1,9 +1,9 @@
 class Inventory
-  attr_accessor :banana_splits #this is needed for the day class to reset it to 0 at the end of each day
+  attr_accessor :sellable_product #this is needed for the day class to reset it to 0 at the end of each day
   attr_reader :money, :actual_buyers, :potential_buyers, :stock_to_buy, :insufficient_credit, :stock
   def initialize
     @money = 5
-    @banana_splits = 0
+    @sellable_product = {"Banana Split" => 0}
     @stock = {"banana" => 0, "icecream" => 0 }
   end
 
@@ -20,18 +20,18 @@ class Inventory
   end
 
   def make_product(quantity = 1)
-    while  ((quantity > @banana_splits) && @stock.all?{|key, value| value > 0 })
-      @stock["banana"] -= 1
-      @stock["icecream"] -= 1
-      @banana_splits += 1
+    while  ((quantity > @sellable_product.values[0]) && @stock.all?{|key, value| value > 0 })
+      @stock[@stock.keys[0]] -= 1
+      @stock[@stock.keys[1]] -= 1
+      @sellable_product[@sellable_product.keys[0]] += 1
     end
   end
   
   def sell_product(sale_price,potential_buyers)
     @actual_buyers = 0
     @potential_buyers = potential_buyers
-    while (0 < @potential_buyers) && (banana_splits > 0)
-      @banana_splits -= 1
+    while (0 < @potential_buyers) && (@sellable_product.values[0] > 0)
+      @sellable_product[@sellable_product.keys[0]] -= 1
       @potential_buyers -= 1
       @actual_buyers += 1
       @money += sale_price
