@@ -30,7 +30,7 @@ class Inventory
   def sell_product(sale_price,potential_buyers)
     @actual_buyers = 0
     @potential_buyers = potential_buyers
-    while (0 < potential_buyers) && (banana_splits > 0)
+    while (0 < @potential_buyers) && (banana_splits > 0)
       @banana_splits -= 1
       @potential_buyers -= 1
       @actual_buyers += 1

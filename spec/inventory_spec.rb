@@ -73,20 +73,30 @@ describe Inventory do
     before do
       @inventory.banana_splits = 10
     end
-    it "should be possible to sell a product" do
 
+    it "should be possible to sell products" do
+      @inventory.sell_product(1, 100)
+      expect(@inventory.banana_splits).to equal 0
+      expect(@inventory.money).to equal 15
     end
 
     it "should not be possible to sell more products than I currently have in stock" do
+      banana_splits_before_sale = @inventory.banana_splits
+      @inventory.sell_product(10, 100)
 
+      expect(@inventory.actual_buyers).to equal banana_splits_before_sale
+      expect(@inventory.money).to equal 105
     end
 
     it "My financial situation should improve to reflect sold product" do
-
+      money_before_sales = @inventory.money
+      @inventory.sell_product(10,100)
+      expect(@inventory.money).to be > money_before_sales
     end
 
     it "I should not be able to sell more product than potential shoppers" do
-
+      @inventory.sell_product(10,5)
+      expect(@inventory.banana_splits).to equal 5
     end
   end
 end 
