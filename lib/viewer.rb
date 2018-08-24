@@ -20,7 +20,7 @@ class Viewer
   end
   
   def input_unclear
-    puts "I'm sorry, I did not understand that. Please try again."
+    puts "I'm sorry, I did not understand that. Are you sure that was a valid option?."
   end
 
   def insufficient_product_price
@@ -34,13 +34,18 @@ class Viewer
   def insufficient_credit
   puts "You do not have enough money to afford this."
   end
-  
+
   def not_enough_product
     puts "You don't have enough products to fulfill this request."
   end
   
-  def production_message
-    puts "How many Banana Splits would you like to make?"
+  def product_select_message
+    puts "What product do you wish to make?"
+    puts "1. Banana Split" 
+  end
+
+  def product_quantity_message(product)
+    puts "How many #{product} would you like to make?"
   end
   
   def market_price_message(banana_price, icecream_price, break_even_price)

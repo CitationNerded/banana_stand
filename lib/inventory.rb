@@ -19,11 +19,9 @@ class Inventory
     end
   end
 
-  def make_product(quantity = 1)
+  def make_product(product_to_make, quantity = 1)
     while  ((quantity > @sellable_product.values[0]) && @stock.all?{|key, value| value > 0 })
-      @stock[@stock.keys[0]] -= 1
-      @stock[@stock.keys[1]] -= 1
-      @sellable_product[@sellable_product.keys[0]] += 1
+      recipe_book(product_to_make)
     end
   end
   
@@ -42,5 +40,13 @@ class Inventory
   
   def cannot_afford?
     @money < 0.0
+  end
+
+  def recipe_book(product_to_make)
+    if product_to_make == "Banana Split"
+      @stock[@stock.keys[0]] -= 1 #One Banana
+      @stock[@stock.keys[1]] -= 1 #One Icecream
+      @sellable_product[@sellable_product.keys[0]] += 1 #Makes One Banana Split
+    end
   end
 end

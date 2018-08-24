@@ -44,26 +44,26 @@ describe Inventory do
     end
     
     it "should be possible to make a default product quantity" do
-      @inventory.make_product
+      @inventory.make_product(@inventory.sellable_product.keys[0])
       expect(@inventory.sellable_product.values[0]).to equal 1
       expect(@inventory.stock.values[0, 2]).to eq [6, 9]  
     end
 
     it "should be possible to define the quantity you wish to make" do
-      @inventory.make_product(3)
+      @inventory.make_product(@inventory.sellable_product.keys[0] ,3)
       expect(@inventory.sellable_product.values[0]).to equal 3
       expect(@inventory.stock.values[0, 2]).to eq [4, 7]  
     end
 
     it "should not be possible to make more product than the raw resources allow" do
-      @inventory.make_product(40)
+      @inventory.make_product(@inventory.sellable_product.keys[0], 40)
       expect(@inventory.sellable_product.values[0]).to equal 7
       expect(@inventory.stock.values[0, 2]).to eq [0, 3]  
  
     end
 
     it "should not be possible to make more product even if the user has enough of one required resource" do
-      @inventory.make_product(8)
+      @inventory.make_product(@inventory.sellable_product.keys[0], 8)
       expect(@inventory.sellable_product.values[0]).to equal 7
       expect(@inventory.stock.values[0, 2]).to eq [0, 3]  
     end

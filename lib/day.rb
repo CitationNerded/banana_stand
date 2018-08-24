@@ -12,10 +12,10 @@ class Day
     start_of_day
   end
 
-  def get_input
+  def get_input(valid_selection = 1000)
     loop do
       input = gets.chomp
-      return input.to_i if (input.to_i.to_s == input)
+      return input.to_i if ((input.to_i.to_s == input) && input.to_i <= valid_selection.to_i)
       @viewer.input_unclear
     end
   end
@@ -29,7 +29,7 @@ class Day
     options
   end
 
-  def stock_menu
+  def buy_stock_menu
   stock_selection
     if stock <= @inventory.stock.keys.count
       stock_price_join = stock_to_buy + "_price"
@@ -45,7 +45,7 @@ class Day
       end
     else
       @viewer.input_unclear
-      stock_menu
+      buy_stock_menu
     end
   end
   
@@ -63,31 +63,30 @@ class Day
   
   def options
     @viewer.user_options    
-    selected_option = get_input.to_s
+    selected_option = get_input(7)
     case
-    when ("0. Start").include?(selected_option)
+    when selected_option == 0
       day_events
-    when ("1. Buy").include?(selected_option)
-      stock_menu
+    when selected_option == 1
+      buy_stock_menu
       options
-    when ("2. Produce").include?(selected_option)
-      @viewer.production_message
-      make_product
+    when selected_option == 2
+      make_product_menu
       options
-    when ("3. Price Set").include?(selected_option)
+    when selected_option == 3
       @viewer.product_price_message
       @market.split_price(get_input)
       options
-    when ("4. Climate").include?(selected_option)
+    when selected_option == 4
       @viewer.weather_report(@climate.weather)
       options
-    when ("5. Market Costs").include?(selected_option)
+    when selected_option == 5
       @viewer.market_price_message(@market.banana_price,@market.icecream_price,@market.break_even_price)
       options
-    when ("6. Current Balance").include?(selected_option)
+    when selected_option == 6
       @viewer.bank_balance(@inventory.money.round(2))
       options
-    when ("7. Estimated Foot Traffic").include?(selected_option)
+    when selected_option == 7
       @viewer.walker_report(@foot_traffic)
       options
     else
@@ -98,20 +97,26 @@ class Day
   private
   def stock_selection
     @viewer.supplies_message
-    @stock = get_input
+    @stock = get_input(@inventory.stock.size)
     @stock_to_buy = @inventory.stock.keys[@stock-1]
 
     @viewer.buy_supplies_message
-    @stock_quantity = get_input.to_i
+    @stock_quantity = get_input
   end
   
-  def make_product #Might be worth renaming this to not be confused with the inventory class version of this method
-    @inventory.make_product(get_input)
+  def make_product_menu #Might be worth renaming this to not be confused with the inventory class version of this method
+    @viewer.product_select_message
+    product_input = get_input(@inventory.sellable_product.length)
+    product = @inventory.sellable_product.keys[product_input -1]
+    @viewer.product_quantity_message(product)
+    quantity = get_input
+
+    @inventory.make_product(product, quantity)
     @inventory.stock.each{ |value,key| @viewer.product_status(key, value)}
     @viewer.product_status(@inventory.sellable_product.values[0], @inventory.sellable_product.keys[0])
   end
   
   def loss_condition?
-    ((@inventory.money < @market.banana_price) && (@inventory.stock["banana"] == 0)) || ((@inventory.money < @market.icecream_price) && (@inventory.stock["icecream"] == 0))
+    ((@inventory.money < @market.banana_price) && (@inventory.stock.values[0] == 0)) || ((@inventory.money < @market.icecream_price) && (@inventory.stock.values[0] == 0))
   end
 end
