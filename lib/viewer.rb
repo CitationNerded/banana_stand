@@ -6,7 +6,7 @@ class Viewer
   
   
   def welcome(money)
-    puts "Welcome to the Banana Stand! You have started with $#{money}. Please input how much you want Banana Splits to cost today:"
+    puts "Welcome to the Banana Stand! You have started with $#{money}."
   end
   
   def supplies_message

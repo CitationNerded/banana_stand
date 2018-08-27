@@ -12,9 +12,9 @@ class Inventory
     
     if cannot_afford?
       self.money = before_purchase
-      insufficient_credit = false
-    else
       insufficient_credit = true
+    else
+      insufficient_credit = false
       self.stock[stock_to_buy] += stock_quantity
     end
   end

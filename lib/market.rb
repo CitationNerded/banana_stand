@@ -1,5 +1,6 @@
 class Market
-  attr_reader :banana_price, :icecream_price, :price_of_split, :interest_in_product
+  attr_accessor :banana_price, :icecream_price
+  attr_reader :price_of_split, :interest_in_product
   
   def market_conditions(conditions = random_demand)
       case conditions
