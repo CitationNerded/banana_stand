@@ -1,16 +1,15 @@
 class Day
-  attr_accessor :inventory, :climate, :foot_traffic, :market, :viewer, :input, :options
-  
+  attr_reader :inventory, :climate, :market, :viewer, :input, :options
+  attr_accessor :foot_traffic
   attr_reader :starting_balance, :stock_to_buy, :stock_price, :stock, :stock_quantity, :product, :net_profit, :days_survived, :potential_buyers
   @@days_survived = 0
 
-  def initialize(inventory, climate, foot_traffic, market, input)      
+  def initialize(inventory, climate, foot_traffic, market)      
     @@days_survived += 1
     @inventory = inventory
     @climate = climate
     @foot_traffic = foot_traffic
     @market = market
-    @input = input
     
     initialize_day
   end
@@ -21,7 +20,7 @@ class Day
   end
 
   def set_product_price(input)
-    @market.split_price(input)
+    @market.product_price(input)
   end
 
   
@@ -30,11 +29,11 @@ class Day
   end
   
   def sell_product
-    @inventory.sell_product(@market.price_of_split ,@potential_buyers)
+    @inventory.sell_product(@market.price_of_product ,@potential_buyers)
   end
 
   def establish_profit
-    @net_profit = (@inventory.money - starting_balance).round(2)
+    @net_profit = (@inventory.money - starting_balance)
   end
   
   def destroy_product_surplus

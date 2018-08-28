@@ -3,16 +3,13 @@ require_relative '../lib/inventory'
 require_relative '../lib/climate'
 require_relative '../lib/day'
 require_relative '../lib/foot_traffic'
-require_relative '../lib/viewer'
-require_relative '../lib/input'
 describe Day do
   before do
     @inventory = Inventory.new
     @climate = Climate.new
     @foot_traffic = FootTraffic.new
     @market = Market.new
-    @input = Input.new
-    @day = Day.new(@inventory, @climate, @foot_traffic, @market, @input)
+    @day = Day.new(@inventory, @climate, @foot_traffic, @market)
     
     #Stub randomized prices
     @day.market.banana_price = 0.05
@@ -23,7 +20,7 @@ describe Day do
   describe "Given I start a new day" do
     it "should initilize all required components for a business day" do
       @day.set_product_price(2)
-      expect(@day.market.price_of_split).to equal 2.0
+      expect(@day.market.price_of_product).to equal 2.0
     end
   end
   
@@ -80,7 +77,7 @@ describe Day do
   describe "Given I want to establish how much profit I made today" do
     it "I should be able to see my profit/loss assuming no sales or purchases" do
       @day.establish_profit
-      expect(@day.net_profit).to equal 0.0
+      expect(@day.net_profit).to equal 0
     end
 
     it "I should be able to see my losses assuming i bought product but made no sales" do

@@ -1,52 +1,57 @@
 class DayController
-  def initialize(model, view)
+  attr_reader :viewer
+  def initialize(model, view, input)
     @day = model
     @viewer = view
+    @input = input
 
-    day_progression
   end
   
-  private
+  #private
   
   def day_progression
-    define_selling_price
-    options_menu
+    define_selling_price {@input.get_input}
+    select_option
   end
   
   def define_selling_price
     display_market_rates
-    @day.set_product_price(@day.input.get_input)
+    @day.set_product_price(yield)
+  end
+
+  def select_option
+    options_menu {@input.get_input}
   end
 
   def options_menu
     @viewer.user_options    
-    selected_option = @day.input.get_input
+    selected_option = yield
     case
     when selected_option == 0
       process_day
     when selected_option == 1
-      buy_product
-      options_menu
+      buy_product {@input.get_input}
+      select_option
     when selected_option == 2
-      make_product
-      options_menu
+      make_product {@input.get_input}
+      select_option
     when selected_option == 3
       define_selling_price
-      options_menu
+      select_option
     when selected_option == 4
       display_weather_report
-      options_menu
+      select_option
     when selected_option == 5
       display_market_rates
-      options_menu
+      select_option
     when selected_option == 6
       display_bank_balance
-      options_menu
+      select_option
     when selected_option == 7
       display_foot_traffic
-      options_menu
+      select_option
     else
-      options_menu
+      select_option
     end
   end
 
@@ -60,7 +65,7 @@ class DayController
   end
 
   def display_bank_balance
-    @viewer.bank_balance(@day.inventory.money.round(2))
+    @viewer.bank_balance(@day.inventory.money)
   end
 
   def display_foot_traffic
@@ -69,24 +74,24 @@ class DayController
 
   def buy_product
     @viewer.supplies_message
-    @day.stock_to_purchase(@day.input.get_input)
+    @day.stock_to_purchase(yield(@day.inventory.stock.length))
 
     @viewer.buy_supplies_message
-    @day.quantity_to_purchase(@day.input.get_input)
+    @day.quantity_to_purchase(yield)
 
     @day.purchase_stock
 
     @viewer.insufficient_credit if @day.inventory.insufficient_credit
-    @viewer.bank_balance(@day.inventory.money.round(2))
+    @viewer.bank_balance(@day.inventory.money)
     @viewer.product_status(@day.inventory.stock[@day.stock_to_buy], @day.stock_to_buy)
   end
 
   def make_product
     @viewer.product_select_message
-    @day.product_to_make(@day.input.get_input(@day.inventory.sellable_product.length))
+    @day.product_to_make(yield(@day.inventory.sellable_product.length))
 
     @viewer.product_quantity_message(@day.product)
-    @day.quantity_to_make(@day.input.get_input)
+    @day.quantity_to_make(yield)
 
     @day.make_product
     @day.inventory.stock.each{ |value,key| @viewer.product_status(key, value)}

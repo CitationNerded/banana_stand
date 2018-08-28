@@ -41,15 +41,15 @@ class Game
    end
 
    def day
-    @day = Day.new(@inventory, weather.progress_weather_patterns, foot_traffic.walker_forecast(weather.weather), market, input)
+    @day = Day.new(@inventory, weather.progress_weather_patterns, foot_traffic.walker_forecast(weather.weather), market)
    end
 
    def next_day
     while @inventory.money > 0
       day
       
-      @day_controller = DayController.new(day, viewer)
-      
+      @day_controller = DayController.new(day, viewer, input)
+      @day_controller.day_progression
     end
    end
 end

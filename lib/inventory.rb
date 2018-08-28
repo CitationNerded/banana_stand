@@ -1,5 +1,6 @@
 class Inventory
-  attr_accessor :sellable_product, :actual_buyers, :money, :potential_buyers, :stock_to_buy, :insufficient_credit, :stock
+  attr_reader :sellable_product, :stock_to_buy, :insufficient_credit, :stock
+  attr_accessor :actual_buyers, :money, :potential_buyers
   def initialize
     @money = 5
     @sellable_product = {"Banana Split" => 0}
@@ -17,6 +18,7 @@ class Inventory
       insufficient_credit = false
       self.stock[stock_to_buy] += stock_quantity
     end
+    self.money.round(2)
   end
 
   def make_product(product_to_make, quantity = 1)
@@ -33,6 +35,7 @@ class Inventory
       self.potential_buyers -= 1
       self.actual_buyers += 1
       self.money += sale_price
+      self.money.round(2)
     end
   end
 

@@ -10,56 +10,56 @@ describe Market do
       expect(@market.banana_price).to equal nil
     end
 
-    it "has been set to high" do
-      @market.market_conditions(10)
-
-      expect(@market.icecream_price).to equal 0.5
-      expect(@market.banana_price).to equal 0.05
-    end
-
-    it "has been set to low" do
-      @market.market_conditions(1)
-
-      expect(@market.icecream_price).to equal 0.25
-      expect(@market.banana_price).to equal 0.02
-    end
-
-    it "is run with undefined inputs" do
+    it "have been initialized for the day" do
       @market.market_conditions
+      initial_value_of_icecream = @market.icecream_price
+      initial_value_of_banana = @market.banana_price
 
-      expect(@market.icecream_price).to_not equal nil
-      expect(@market.banana_price).to_not equal nil
+      expect(initial_value_of_icecream).to_not equal nil
+      expect(initial_value_of_banana).to_not equal nil
+    end
+
+    it "have been re-initialized" do
+      @market.market_conditions
+      initial_value_of_icecream = @market.icecream_price
+      initial_value_of_banana = @market.banana_price
+
+      @market.market_conditions
+      new_value_of_icecream = @market.icecream_price
+      new_value_of_banana = @market.banana_price
+
+      expect(initial_value_of_icecream).to_not equal new_value_of_icecream
+      expect(initial_value_of_banana).to_not equal new_value_of_banana
     end
   end
 
   describe "Given I want to calculate break even price of goods" do
-    it "should equal the sum of bananas and icecream" do
-      @market.market_conditions(10)
+    it "should return a complatible value" do
+      @market.market_conditions
 
-      expect(@market.break_even_price).to equal (@market.banana_price + @market.icecream_price)
       expect(@market.break_even_price).to be_a Float
     end
   end
 
   describe "Given I wish to set the price of a banana split" do
     it "should default to a float value" do
-      @market.split_price(1)
+      @market.product_price(1)
 
-      expect(@market.price_of_split).to equal 1.0
-      expect(@market.price_of_split).to be_a Float
+      expect(@market.price_of_product).to equal 1.0
+      expect(@market.price_of_product).to be_a Float
     end
 
     it "should be definable" do
-      @market.split_price(300)
+      @market.product_price(300)
 
-      expect(@market.price_of_split).to equal 300.0
-      expect(@market.price_of_split).to be_a Float
+      expect(@market.price_of_product).to equal 300.0
+      expect(@market.price_of_product).to be_a Float
     end
   end
 
   describe "Given there is market interest" do
     it "should be possible without user input" do
-      @market.split_price(2)
+      @market.product_price(2)
       @market.market_interest(12, 2, 2)
       
       expect(@market.interest_in_product).to be 3

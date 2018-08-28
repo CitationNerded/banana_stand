@@ -28,7 +28,7 @@ class Viewer
   end
   
   def bank_balance(money)
-    puts "You have $#{money} dollars remaining."
+    puts "You have $#{money.round(2)} dollars remaining."
   end
 
   def insufficient_credit
@@ -49,11 +49,13 @@ class Viewer
   end
   
   def market_price_message(banana_price, icecream_price, break_even_price)
-    puts "The price for bananas today is $#{banana_price}"
-    puts "The price for icecream today is $#{icecream_price}"
-    puts "You will need to charge at least $#{break_even_price} to break even today."
-    puts
-    puts "What would you like to charge?"
+    puts <<~HEREDOC
+    The price for bananas today is $#{banana_price.round(2)}
+    The price for icecream today is $#{icecream_price.round(2)}
+    You will need to charge at least $#{break_even_price.round(2)} to break even today.
+    
+    What would you like to charge?
+    HEREDOC
   end
   
   def product_price_message
@@ -86,7 +88,7 @@ class Viewer
   end
   
   def end_of_day_report(money,net_profit)
-    puts "Congratulations! you now have $#{money}. This is a profit of $#{net_profit}"
+    puts "Congratulations! you now have $#{money.round(2)}. This is a profit of $#{net_profit.round(2)}"
   end
   
   def you_have_survived(number_of_days)
