@@ -60,7 +60,7 @@ describe DayController do
     it "should return a view of my balance" do
       expect(@viewer).to receive(:bank_balance)
       expect(@day).to receive(:inventory)
-      expect(@inventory).to receive(:money)
+      expect(@inventory).to receive(:money).and_return(4)
 
       @day_controller.display_bank_balance
     end
@@ -74,18 +74,29 @@ describe DayController do
     end
   end
 
-  # context "Given I kick off a product purchase" do
-  #   it "should allow me to buy a product" do
-  #   expect(@viewer).to receive(:supplies_message)
-  #   expect(@viewer).to receive(:buy_supplies_message)
-  #   expect(@day).to receive(:stock_to_purchase)
-  #   expect(@day).to receive(:inventory)
-  #   expect(@inventory).to receive(:stock).and_return(1)
-  #   expect(@input).to receive(:get_input).with(1)
+  context "Given I kick off a product purchase" do
+    it "should allow me to buy a product" do
+      expect(@viewer).to receive(:supplies_message)
+      expect(@day).to receive(:stock_to_purchase)
+      allow(@day).to receive(:inventory)
+      allow(@inventory).to receive(:stock)
+      allow(@stock).to receive(:length)
+      expect(@input).to receive(:get_input)
+      
+      @day_controller.select_product_to_buy
+    end
+    it "should allow me to set a product quantity" do
+      expect(@viewer).to receive(:buy_supplies_message)
+      expect(@day).to receive(:quantity_to_purchase)
+      expect(@input).to receive(:get_input).and_return(2)
 
-  #   @day_controller.buy_product
-  #   end
-  # end
+      @day_controller.quantity_of_product_to_buy
+    end
+    
+    it "should allow the product to be bought if they have money" do
+
+    end
+  end
 end 
 
 #Read LETS - Rspec and how mocking syntax is used

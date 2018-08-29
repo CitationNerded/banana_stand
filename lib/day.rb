@@ -56,7 +56,7 @@ class Day
   end
   
   def product_to_make(input)
-    product_input = input
+    product_input = input(@inventory.sellable_product.length)
     @product = @inventory.sellable_product.keys[product_input -1]
   end
   

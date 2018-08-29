@@ -37,6 +37,8 @@ class DayController
       when 0
         process_day
       when 1
+        select_product_to_buy
+        quantity_of_product_to_buy
         buy_product
       when 2
         make_product
@@ -71,15 +73,19 @@ class DayController
     @viewer.walker_report(@day.foot_traffic)
   end
 
-  def buy_product
+  def select_product_to_buy
     @viewer.supplies_message
     @day.stock_to_purchase(@input.get_input(@day.inventory.stock.length))
+  end
 
+  def quantity_of_product_to_buy
     @viewer.buy_supplies_message
     @day.quantity_to_purchase(@input.get_input)
+  end
 
+  def buy_product
     @day.purchase_stock
-
+  
     @viewer.insufficient_credit if @day.inventory.insufficient_credit
     @viewer.bank_balance(@day.inventory.money)
     @viewer.product_status(@day.inventory.stock[@day.stock_to_buy], @day.stock_to_buy)
