@@ -10,7 +10,7 @@ class Inventory
   def buy_stock(stock_to_buy, cost_of_stock, stock_quantity = 1)
     before_purchase = self.money
     self.money -= (cost_of_stock * stock_quantity)
-    
+
     if cannot_afford?
       self.money = before_purchase
       insufficient_credit = true

@@ -10,8 +10,6 @@ class Day
     @climate = climate
     @foot_traffic = foot_traffic
     @market = market
-    
-    initialize_day
   end
   
   def initialize_day
@@ -72,5 +70,9 @@ class Day
 
   def loss_condition?
     ((@inventory.money < @market.banana_price) && (@inventory.stock.values[0] == 0)) || ((@inventory.money < @market.icecream_price) && (@inventory.stock.values[0] == 0))
+  end
+
+  def account_balance
+    @inventory.money
   end
 end

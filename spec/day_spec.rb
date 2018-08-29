@@ -10,7 +10,7 @@ describe Day do
     @foot_traffic = FootTraffic.new
     @market = Market.new
     @day = Day.new(@inventory, @climate, @foot_traffic, @market)
-    
+    @day.initialize_day
     #Stub randomized prices
     @day.market.banana_price = 0.05
     @day.market.icecream_price = 0.5
